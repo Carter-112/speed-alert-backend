@@ -1,17 +1,19 @@
+const backendURL = "https://your-backend.onrender.com"; // Replace with your Render URL
+
 async function fetchSpeedLimit(latitude, longitude) {
     try {
-        const response = await fetch(`http://localhost:3000/speed-limit?latitude=${latitude}&longitude=${longitude}`);
+        const response = await fetch(`${backendURL}/speed-limit?latitude=${latitude}&longitude=${longitude}`);
         const data = await response.json();
-
+        
         if (data.speedLimit) {
             return data.speedLimit; // Return the actual speed limit from the API
         } else {
             console.warn("Speed limit data not found for this location.");
-            return null;
+            return 55; // Default speed limit if not found
         }
     } catch (error) {
         console.error("Error fetching speed limit:", error);
-        return null;
+        return 55; // Default to 55 mph on error
     }
 }
 
@@ -24,18 +26,24 @@ function startTracking() {
             // Fetch the actual speed limit from the backend
             const speedLimit = await fetchSpeedLimit(latitude, longitude);
 
-            if (speedLimit === null) {
-                alert("Unable to retrieve speed limit data. Defaulting to 55 mph.");
-                return;
-            }
+            // Calculate allowed speed based on user offset setting
+            const offset = parseInt(document.getElementById("offset1").value); // Customize as needed
+            const allowedSpeed = speedLimit + offset;
 
-            const allowedSpeed = speedLimit; // Using speed limit directly for comparison
-            document.getElementById("speedDisplay").innerText = 
-                `Current Speed: ${speedMph} mph | Speed Limit: ${allowedSpeed} mph`;
+            // Display speed and limit in the UI
+            const speedDisplay = document.getElementById("speedDisplay");
+            speedDisplay.innerHTML = `
+                <p>Speed Limit: ${speedLimit} mph</p>
+                <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
+            `;
 
+            // Change color to red if speed exceeds allowed offset
+            const currentSpeedElement = document.getElementById("currentSpeed");
             if (speedMph > allowedSpeed) {
+                currentSpeedElement.style.color = "red";
                 playAlertSound();
             } else {
+                currentSpeedElement.style.color = "black";
                 document.getElementById("alertSound").hidden = true;
             }
         }, showError, {
