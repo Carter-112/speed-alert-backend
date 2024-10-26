@@ -1,4 +1,4 @@
-const backendURL = "https://your-backend.onrender.com"; // Replace with your Render URL
+const backendURL = "https://speed-alert-backend.onrender.com";
 
 async function fetchSpeedLimit(latitude, longitude) {
     try {
