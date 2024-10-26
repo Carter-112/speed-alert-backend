@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Alert App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .range-group {
+            margin: 15px 0;
+        }
+        .range-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        select, input[type="number"] {
+            width: 30%;
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background-color: #ff4747;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #ff2222;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Speed Alert App</h1>
+
+        <!-- Range 1-55 -->
+        <div class="range-group">
+            <div class="range-title">1 - 55 mph</div>
+            <div class="input-group">
+                <select id="offset1">
+                    <option value="1">1</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <select id="type1">
+                    <option value="mph">MPH</option>
+                    <option value="percent">%</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Range 56-69 -->
+        <div class="range-group">
+            <div class="range-title">56 - 69 mph</div>
+            <div class="input-group">
+                <select id="offset2">
+                    <option value="1">1</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <select id="type2">
+                    <option value="mph">MPH</option>
+                    <option value="percent">%</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Range 70+ -->
+        <div class="range-group">
+            <div class="range-title">70+ mph</div>
+            <div class="input-group">
+                <select id="offset3">
+                    <option value="1">1</option>
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                </select>
+                <select id="type3">
+                    <option value="mph">MPH</option>
+                    <option value="percent">%</option>
+                </select>
+            </div>
+        </div>
+
+        <button onclick="startTracking()">Start Tracking</button>
+
+        <div id="speedDisplay"></div>
+        <div id="alertSound" hidden>⚠️ SLOW DOWN! ⚠️</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
