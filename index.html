@@ -35,8 +35,8 @@
             align-items: center;
             justify-content: space-between;
         }
-        select, input[type="number"] {
-            width: 30%;
+        select {
+            width: 45%;
             padding: 5px;
             border-radius: 5px;
             border: none;
@@ -59,17 +59,14 @@
 <body>
     <div class="container">
         <h1>Speed Alert App</h1>
-
+        
         <!-- Range 1-55 -->
         <div class="range-group">
             <div class="range-title">1 - 55 mph</div>
             <div class="input-group">
                 <select id="offset1">
-                    <option value="1">1</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
+                    <!-- Generate options from 1 to 50 -->
+                    ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
                 </select>
                 <select id="type1">
                     <option value="mph">MPH</option>
@@ -83,11 +80,8 @@
             <div class="range-title">56 - 69 mph</div>
             <div class="input-group">
                 <select id="offset2">
-                    <option value="1">1</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
+                    <!-- Generate options from 1 to 50 -->
+                    ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
                 </select>
                 <select id="type2">
                     <option value="mph">MPH</option>
@@ -101,11 +95,8 @@
             <div class="range-title">70+ mph</div>
             <div class="input-group">
                 <select id="offset3">
-                    <option value="1">1</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
+                    <!-- Generate options from 1 to 50 -->
+                    ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
                 </select>
                 <select id="type3">
                     <option value="mph">MPH</option>
@@ -115,7 +106,7 @@
         </div>
 
         <button onclick="startTracking()">Start Tracking</button>
-
+        
         <div id="speedDisplay"></div>
         <div id="alertSound" hidden>⚠️ SLOW DOWN! ⚠️</div>
     </div>
