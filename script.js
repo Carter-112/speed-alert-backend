@@ -90,17 +90,30 @@ function startTracking() {
         const speedMph = ((speed || 0) * 2.23694).toFixed(2); // Convert speed to MPH, defaulting to 0 if null
 
         const speedLimit = await fetchSpeedLimit(latitude, longitude);
-        const offset = parseInt(document.getElementById("offset1").value) || 0;
-        const allowedSpeed = speedLimit ? speedLimit + offset : '--';
+        if (speedLimit === null) return;
 
-        // Update speed display and check for alerts
+        // Determine the correct offset based on speed limit range
+        let offset = 0;
+        if (speedLimit <= 55) {
+            offset = parseInt(document.getElementById("offset1").value) || 0;
+        } else if (speedLimit <= 69) {
+            offset = parseInt(document.getElementById("offset2").value) || 0;
+        } else {
+            offset = parseInt(document.getElementById("offset3").value) || 0;
+        }
+
+        const allowedSpeed = speedLimit + offset;
+
+        // Update speed display
         const speedDisplay = document.getElementById("speedDisplay");
         speedDisplay.innerHTML = `
-            <p>Speed Limit: ${speedLimit !== null ? speedLimit + " mph" : "-- mph"}</p>
+            <p>Speed Limit: ${speedLimit} mph</p>
             <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
         `;
 
         const currentSpeedElement = document.getElementById("currentSpeed");
+
+        // Only alert if speed is over the adjusted limit
         if (speedMph > allowedSpeed) {
             currentSpeedElement.style.color = "red";
             playAlertSound();
