@@ -8,14 +8,19 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-image: url('background.png');
-            background-size: cover;
-            background-position: center;
+            background-image: url('background.png'); /* Reference to your background image */
+            background-size: cover; /* Ensures the image covers the full screen */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-position: center center; /* Centers the image */
+            height: 100vh; /* Makes sure it fills the full viewport height */
             color: white;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .container {
             max-width: 400px;
-            margin: 0 auto;
             padding: 20px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
@@ -65,7 +70,7 @@
             <div class="range-title">1 - 55 mph</div>
             <div class="input-group">
                 <select id="offset1">
-                    <!-- Generate options from 1 to 50 -->
+                    <!-- Dropdown options 1 to 50 -->
                     ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
                 </select>
                 <select id="type1">
@@ -80,7 +85,6 @@
             <div class="range-title">56 - 69 mph</div>
             <div class="input-group">
                 <select id="offset2">
-                    <!-- Generate options from 1 to 50 -->
                     ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
                 </select>
                 <select id="type2">
@@ -95,7 +99,6 @@
             <div class="range-title">70+ mph</div>
             <div class="input-group">
                 <select id="offset3">
-                    <!-- Generate options from 1 to 50 -->
                     ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
                 </select>
                 <select id="type3">
