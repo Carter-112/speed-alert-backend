@@ -12,6 +12,21 @@ function initializePage() {
     const wasTracking = localStorage.getItem("tracking") === "true";
     if (wasTracking) {
         toggleTracking(); // Automatically resumes tracking if it was active
+    } else {
+        requestLocationAccess(); // Prompt for location access if not tracking
+    }
+}
+
+// Prompt user for location access on load
+function requestLocationAccess() {
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by this browser.");
+    } else {
+        navigator.geolocation.getCurrentPosition(
+            () => console.log("Location access granted."),
+            showError,
+            { enableHighAccuracy: true, timeout: 5000 }
+        );
     }
 }
 
@@ -64,40 +79,36 @@ function startTracking() {
     document.getElementById("toggleTrackingButton").innerText = "Stop Tracking";
     localStorage.setItem("tracking", "true"); // Save tracking state to localStorage
 
-    if (navigator.geolocation) {
-        watchId = navigator.geolocation.watchPosition(async (position) => {
-            const { latitude, longitude, speed } = position.coords;
-            const speedMph = (speed * 2.23694).toFixed(2); // Convert speed to MPH
+    watchId = navigator.geolocation.watchPosition(async (position) => {
+        const { latitude, longitude, speed } = position.coords;
+        const speedMph = (speed * 2.23694).toFixed(2); // Convert speed to MPH
 
-            const speedLimit = await fetchSpeedLimit(latitude, longitude);
-            if (speedLimit === null) return;
+        const speedLimit = await fetchSpeedLimit(latitude, longitude);
+        if (speedLimit === null) return;
 
-            const offset = parseInt(document.getElementById("offset1").value);
-            const allowedSpeed = speedLimit + offset;
+        const offset = parseInt(document.getElementById("offset1").value);
+        const allowedSpeed = speedLimit + offset;
 
-            // Update speed display and check for alerts
-            const speedDisplay = document.getElementById("speedDisplay");
-            speedDisplay.innerHTML = `
-                <p>Speed Limit: ${speedLimit} mph</p>
-                <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
-            `;
+        // Update speed display and check for alerts
+        const speedDisplay = document.getElementById("speedDisplay");
+        speedDisplay.innerHTML = `
+            <p>Speed Limit: ${speedLimit} mph</p>
+            <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
+        `;
 
-            const currentSpeedElement = document.getElementById("currentSpeed");
-            if (speedMph > allowedSpeed) {
-                currentSpeedElement.style.color = "red";
-                playAlertSound();
-            } else {
-                currentSpeedElement.style.color = "black";
-                document.getElementById("alertSound").hidden = true;
-            }
-        }, showError, {
-            enableHighAccuracy: true,
-            maximumAge: 1000,
-            timeout: 5000
-        });
-    } else {
-        alert("Geolocation is not supported by this browser.");
-    }
+        const currentSpeedElement = document.getElementById("currentSpeed");
+        if (speedMph > allowedSpeed) {
+            currentSpeedElement.style.color = "red";
+            playAlertSound();
+        } else {
+            currentSpeedElement.style.color = "black";
+            document.getElementById("alertSound").hidden = true;
+        }
+    }, showError, {
+        enableHighAccuracy: true,
+        maximumAge: 1000,
+        timeout: 5000
+    });
 }
 
 // Stops tracking, updates button text, and saves state
@@ -113,7 +124,7 @@ function stopTracking() {
 function playAlertSound() {
     const alertDiv = document.getElementById("alertSound");
     alertDiv.hidden = false;
-    const audio = new Audio("assets/alert.mp3"); // Path to alert sound
+    const audio = new Audio("alert.mp3"); // Path to alert sound
     audio.play();
 }
 
