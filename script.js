@@ -8,6 +8,12 @@ let watchId = null; // Stores the geolocation watch ID
 function initializePage() {
     loadOffsets();
 
+    // Set initial speed display to 0 mph
+    document.getElementById("speedDisplay").innerHTML = `
+        <p>Speed Limit: -- mph</p>
+        <p>Current Speed: <span id="currentSpeed">0 mph</span></p>
+    `;
+
     // Check if tracking was previously active
     const wasTracking = localStorage.getItem("tracking") === "true";
     if (wasTracking) {
@@ -81,18 +87,16 @@ function startTracking() {
 
     watchId = navigator.geolocation.watchPosition(async (position) => {
         const { latitude, longitude, speed } = position.coords;
-        const speedMph = (speed * 2.23694).toFixed(2); // Convert speed to MPH
+        const speedMph = ((speed || 0) * 2.23694).toFixed(2); // Convert speed to MPH, defaulting to 0 if null
 
         const speedLimit = await fetchSpeedLimit(latitude, longitude);
-        if (speedLimit === null) return;
-
-        const offset = parseInt(document.getElementById("offset1").value);
-        const allowedSpeed = speedLimit + offset;
+        const offset = parseInt(document.getElementById("offset1").value) || 0;
+        const allowedSpeed = speedLimit ? speedLimit + offset : '--';
 
         // Update speed display and check for alerts
         const speedDisplay = document.getElementById("speedDisplay");
         speedDisplay.innerHTML = `
-            <p>Speed Limit: ${speedLimit} mph</p>
+            <p>Speed Limit: ${speedLimit !== null ? speedLimit + " mph" : "-- mph"}</p>
             <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
         `;
 
