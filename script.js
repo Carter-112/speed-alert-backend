@@ -1,35 +1,27 @@
 const backendURL = "https://roads.googleapis.com/v1/speedLimits";
 const apiKey = "AIzaSyAJNIL9betBD2RfS6mZXpiJL-LwEOo_qMk";
 
-let tracking = false;
-let watchId = null;
+let tracking = false; // Indicates if tracking is on (`true`) or off (`false`)
+let watchId = null; // Stores the geolocation watch ID
 
-// Initialize the page
+// Initializes the page and restores previous tracking state if active
 function initializePage() {
-    // Load stored offsets
     loadOffsets();
 
-    // Check and request geolocation permission
-    if (!navigator.geolocation) {
-        alert("Geolocation is not supported by this browser.");
-    } else {
-        // Check if tracking was active before the page refresh and auto-resume
-        const wasTracking = localStorage.getItem("tracking") === "true";
-        if (wasTracking) {
-            tracking = true;
-            document.getElementById("toggleTrackingButton").innerText = "Stop Tracking";
-            startTracking();
-        }
+    // Check if tracking was previously active
+    const wasTracking = localStorage.getItem("tracking") === "true";
+    if (wasTracking) {
+        toggleTracking(); // Automatically resumes tracking if it was active
     }
 }
 
-// Save selected offset to localStorage
+// Saves offset selections to localStorage
 function saveOffset(offsetId) {
     const offsetValue = document.getElementById(offsetId).value;
     localStorage.setItem(offsetId, offsetValue);
 }
 
-// Load offsets from localStorage
+// Loads offset selections from localStorage
 function loadOffsets() {
     ["offset1", "offset2", "offset3"].forEach(offsetId => {
         const savedValue = localStorage.getItem(offsetId);
@@ -39,7 +31,7 @@ function loadOffsets() {
     });
 }
 
-// Function to fetch the speed limit from the Google Maps API
+// Fetches the speed limit from the Google Maps API based on current location
 async function fetchSpeedLimit(latitude, longitude) {
     try {
         const response = await fetch(`${backendURL}?path=${latitude},${longitude}&key=${apiKey}`);
@@ -57,7 +49,7 @@ async function fetchSpeedLimit(latitude, longitude) {
     }
 }
 
-// Function to start or stop tracking based on current state
+// Toggles tracking on or off depending on the current state
 function toggleTracking() {
     if (tracking) {
         stopTracking();
@@ -66,61 +58,66 @@ function toggleTracking() {
     }
 }
 
-// Function to start tracking
+// Starts tracking, updates button text, and saves state
 function startTracking() {
-    tracking = true;
+    tracking = true; // Update tracking state to active
     document.getElementById("toggleTrackingButton").innerText = "Stop Tracking";
     localStorage.setItem("tracking", "true"); // Save tracking state to localStorage
 
-    watchId = navigator.geolocation.watchPosition(async (position) => {
-        const { latitude, longitude, speed } = position.coords;
-        const speedMph = (speed * 2.23694).toFixed(2);
+    if (navigator.geolocation) {
+        watchId = navigator.geolocation.watchPosition(async (position) => {
+            const { latitude, longitude, speed } = position.coords;
+            const speedMph = (speed * 2.23694).toFixed(2); // Convert speed to MPH
 
-        const speedLimit = await fetchSpeedLimit(latitude, longitude);
-        if (speedLimit === null) return;
+            const speedLimit = await fetchSpeedLimit(latitude, longitude);
+            if (speedLimit === null) return;
 
-        const offset = parseInt(document.getElementById("offset1").value);
-        const allowedSpeed = speedLimit + offset;
+            const offset = parseInt(document.getElementById("offset1").value);
+            const allowedSpeed = speedLimit + offset;
 
-        const speedDisplay = document.getElementById("speedDisplay");
-        speedDisplay.innerHTML = `
-            <p>Speed Limit: ${speedLimit} mph</p>
-            <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
-        `;
+            // Update speed display and check for alerts
+            const speedDisplay = document.getElementById("speedDisplay");
+            speedDisplay.innerHTML = `
+                <p>Speed Limit: ${speedLimit} mph</p>
+                <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
+            `;
 
-        const currentSpeedElement = document.getElementById("currentSpeed");
-        if (speedMph > allowedSpeed) {
-            currentSpeedElement.style.color = "red";
-            playAlertSound();
-        } else {
-            currentSpeedElement.style.color = "black";
-            document.getElementById("alertSound").hidden = true;
-        }
-    }, showError, {
-        enableHighAccuracy: true,
-        maximumAge: 1000,
-        timeout: 5000
-    });
+            const currentSpeedElement = document.getElementById("currentSpeed");
+            if (speedMph > allowedSpeed) {
+                currentSpeedElement.style.color = "red";
+                playAlertSound();
+            } else {
+                currentSpeedElement.style.color = "black";
+                document.getElementById("alertSound").hidden = true;
+            }
+        }, showError, {
+            enableHighAccuracy: true,
+            maximumAge: 1000,
+            timeout: 5000
+        });
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
 }
 
-// Function to stop tracking
+// Stops tracking, updates button text, and saves state
 function stopTracking() {
-    navigator.geolocation.clearWatch(watchId);
-    tracking = false;
+    navigator.geolocation.clearWatch(watchId); // Stop geolocation updates
+    tracking = false; // Update tracking state to inactive
     document.getElementById("toggleTrackingButton").innerText = "Start Tracking";
     document.getElementById("alertSound").hidden = true;
     localStorage.setItem("tracking", "false"); // Save tracking state to localStorage
 }
 
-// Function to play an alert sound
+// Plays an alert sound if speed exceeds the limit
 function playAlertSound() {
     const alertDiv = document.getElementById("alertSound");
     alertDiv.hidden = false;
-    const audio = new Audio("alert.mp3");
+    const audio = new Audio("assets/alert.mp3"); // Path to alert sound
     audio.play();
 }
 
-// Error handler for geolocation errors
+// Error handler for geolocation issues
 function showError(error) {
     switch (error.code) {
         case error.PERMISSION_DENIED:
