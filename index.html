@@ -8,22 +8,25 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-image: url('background.png'); /* Reference to your background image */
-            background-size: cover; /* Ensures the image covers the full screen */
-            background-repeat: no-repeat; /* Prevents the image from repeating */
-            background-position: center center; /* Centers the image */
-            height: 100vh; /* Makes sure it fills the full viewport height */
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
             color: white;
             margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: flex-start; /* Pushes the form higher */
+            min-height: 100vh;
+            padding-top: 20px; /* Adds space from the top */
         }
         .container {
             max-width: 400px;
+            width: 100%;
             padding: 20px;
             background: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
+            margin-top: 20px; /* Additional space from the top */
         }
         h1 {
             margin-bottom: 20px;
@@ -71,7 +74,12 @@
             <div class="input-group">
                 <select id="offset1">
                     <!-- Dropdown options 1 to 50 -->
-                    ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
+                    <!-- Display numbers directly from 1 to 50 -->
+                    <script>
+                        for (let i = 1; i <= 50; i++) {
+                            document.write(`<option value="${i}">${i}</option>`);
+                        }
+                    </script>
                 </select>
                 <select id="type1">
                     <option value="mph">MPH</option>
@@ -85,7 +93,12 @@
             <div class="range-title">56 - 69 mph</div>
             <div class="input-group">
                 <select id="offset2">
-                    ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
+                    <!-- Dropdown options 1 to 50 -->
+                    <script>
+                        for (let i = 1; i <= 50; i++) {
+                            document.write(`<option value="${i}">${i}</option>`);
+                        }
+                    </script>
                 </select>
                 <select id="type2">
                     <option value="mph">MPH</option>
@@ -99,7 +112,12 @@
             <div class="range-title">70+ mph</div>
             <div class="input-group">
                 <select id="offset3">
-                    ${Array.from({length: 50}, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join('')}
+                    <!-- Dropdown options 1 to 50 -->
+                    <script>
+                        for (let i = 1; i <= 50; i++) {
+                            document.write(`<option value="${i}">${i}</option>`);
+                        }
+                    </script>
                 </select>
                 <select id="type3">
                     <option value="mph">MPH</option>
