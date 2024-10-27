@@ -87,10 +87,17 @@ function startTracking() {
 
     watchId = navigator.geolocation.watchPosition(async (position) => {
         const { latitude, longitude, speed } = position.coords;
-        const speedMph = ((speed || 0) * 2.23694).toFixed(2); // Convert speed to MPH, defaulting to 0 if null
+        const speedMph = (speed * 2.23694).toFixed(2); // Convert speed to MPH, defaulting to 0 if null
 
+        // Fetch the speed limit from the API
         const speedLimit = await fetchSpeedLimit(latitude, longitude);
-        if (speedLimit === null) return;
+        if (speedLimit === null) {
+            document.getElementById("speedDisplay").innerHTML = `
+                <p>Speed Limit: -- mph</p>
+                <p>Current Speed: <span id="currentSpeed">${speedMph} mph</span></p>
+            `;
+            return;
+        }
 
         // Determine the correct offset based on speed limit range
         let offset = 0;
