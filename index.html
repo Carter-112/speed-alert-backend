@@ -64,7 +64,7 @@
         }
     </style>
 </head>
-<body>
+<body onload="initializePage()">
     <div class="container">
         <h1>Speed Alert App</h1>
         
@@ -72,7 +72,7 @@
         <div class="range-group">
             <div class="range-title">1 - 55 mph</div>
             <div class="input-group">
-                <select id="offset1">
+                <select id="offset1" onchange="saveOffset('offset1')">
                     <script>
                         for (let i = 1; i <= 50; i++) {
                             document.write(`<option value="${i}">${i}</option>`);
@@ -90,7 +90,7 @@
         <div class="range-group">
             <div class="range-title">56 - 69 mph</div>
             <div class="input-group">
-                <select id="offset2">
+                <select id="offset2" onchange="saveOffset('offset2')">
                     <script>
                         for (let i = 1; i <= 50; i++) {
                             document.write(`<option value="${i}">${i}</option>`);
@@ -108,7 +108,7 @@
         <div class="range-group">
             <div class="range-title">70+ mph</div>
             <div class="input-group">
-                <select id="offset3">
+                <select id="offset3" onchange="saveOffset('offset3')">
                     <script>
                         for (let i = 1; i <= 50; i++) {
                             document.write(`<option value="${i}">${i}</option>`);
